@@ -1,5 +1,4 @@
 #include "JlCompress.h"
-#include <QDebug>
 
 static bool copyData(QIODevice &inFile, QIODevice &outFile)
 {

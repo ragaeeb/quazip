@@ -1,6 +1,5 @@
 #include "ZipThread.h"
 
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -17,17 +16,17 @@ ZipThread::ZipThread(QString const& fileName, bool extractHere, bool cleanup) :
 
 void ZipThread::run()
 {
-	// check if file exists
 	QFile file(m_fileName);
-	if (!file.exists()){
-		qDebug() << "file is not exists gan";
+
+	if ( !file.exists() )
+	{
 		emit done( false, tr("Archive could not be found.") );
 		return;
 	}
 
 	bool result = true;
 	QString resultComment;
-	QuaZip *m_zip = new QuaZip(m_fileName);
+	QuaZip zip(m_fileName);
 
 	QString dest = QDir::homePath();
 
@@ -41,53 +40,56 @@ void ZipThread::run()
 		}
 	}
 
-	qDebug() << "destination folder: " + dest;
+	bool opened = zip.open(QuaZip::mdUnzip);
 
-	m_zip->open(QuaZip::mdUnzip);
-
-	if (!m_zip) {
+	if (!opened) {
 		emit done( false, tr("Could not open archive for decompression.") );
 		return;
 	}
 
-	QuaZipFile *currentFile = new QuaZipFile(m_zip);
-	int entries = m_zip->getEntriesCount();
+	QuaZipFile currentFile(&zip);
+	int entries = zip.getEntriesCount();
 	int current = 0;
 
-	for (bool more = m_zip->goToFirstFile(); more; more = m_zip->goToNextFile())
+	for ( bool more = zip.goToFirstFile(); more; more = zip.goToNextFile() )
 	{
 		++current;
 		// if the entry is a path ignore it. Path existence is ensured separately.
-		if (m_zip->getCurrentFileName().split("/").last() == "")
+		if ( zip.getCurrentFileName().split("/").last() == "" ) {
 			continue;
+		}
 
-		QString outfilename = dest + "/" + m_zip->getCurrentFileName();
+		QString outfilename = dest + "/" + zip.getCurrentFileName();
 		QFile outputFile(outfilename);
 
-		if (!QDir().mkpath(QFileInfo(outfilename).absolutePath())) {
+		if ( !QDir().mkpath( QFileInfo(outfilename).absolutePath() ) ) {
 			result = false;
 			resultComment = QString("Creating output path failed for: %1").arg(outfilename);
 			break;
 		}
 
-		if (!outputFile.open(QFile::WriteOnly)) {
+		if ( !outputFile.open(QFile::WriteOnly) ) {
 			result = false;
 			resultComment = QString("Creating output file failed: %1").arg(outfilename);
 			break;
 		}
 
-		currentFile->open(QIODevice::ReadOnly);
-		outputFile.write(currentFile->readAll());
-		if (currentFile->getZipError() != UNZ_OK) {
+		currentFile.open(QIODevice::ReadOnly);
+		outputFile.write( currentFile.readAll() );
+
+		if ( currentFile.getZipError() != UNZ_OK ) {
 			result = false;
-			resultComment = QString("Zip error: %1, on file %2").arg( currentFile->getZipError() ).arg( currentFile->getFileName() );
+			resultComment = QString("Zip error: %1, on file %2").arg( currentFile.getZipError() ).arg( currentFile.getFileName() );
 			break;
 		}
-		currentFile->close();
+
+		currentFile.close();
 		outputFile.close();
 
 		emit progress(current, entries);
 	}
+
+	file.close();
 
 	if (m_cleanup) {
 		file.remove();
