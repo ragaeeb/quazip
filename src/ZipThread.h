@@ -18,6 +18,7 @@ class ZipThread : public QObject, public QRunnable
 signals:
 	void done(bool success, QString const& error=QString());
 	void progress(int current, int entries);
+	void deflationProgress(qint64 current, qint64 total);
 
 public:
 	/**

@@ -6,6 +6,10 @@
 #include "quazip.h"
 #include "quazipfile.h"
 
+namespace {
+	const int chunkSize = 1024*1024;
+}
+
 namespace canadainc {
 
 ZipThread::ZipThread(QString const& fileName, bool extractHere, bool cleanup) :
@@ -75,7 +79,11 @@ void ZipThread::run()
 		}
 
 		currentFile.open(QIODevice::ReadOnly);
-		outputFile.write( currentFile.readAll() );
+
+		while ( !currentFile.atEnd() ) {
+			outputFile.write( currentFile.read(chunkSize) );
+			emit deflationProgress( currentFile.pos(), currentFile.size() );
+		}
 
 		if ( currentFile.getZipError() != UNZ_OK ) {
 			result = false;
