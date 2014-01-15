@@ -16,6 +16,15 @@ device {
 	}
 }
 
+simulator {
+        CONFIG(release, debug|release) {
+                DESTDIR = o
+        }
+        CONFIG(debug, debug|release) {
+                DESTDIR = o-g
+        }
+}
+
 OBJECTS_DIR = $${DESTDIR}/.obj
 MOC_DIR = $${DESTDIR}/.moc
 RCC_DIR = $${DESTDIR}/.rcc
