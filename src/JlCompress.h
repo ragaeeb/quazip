@@ -23,7 +23,7 @@ private:
       \param fileDest The full name of the file inside the archive.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool compressFile(QuaZip* zip, QString fileName, QString fileDest, const char* password=NULL);
     /// Compress a subdirectory.
     /**
       \param parentZip Opened zip containing the parent directory.
@@ -42,7 +42,7 @@ private:
       \param fileDest The full path to the destination file.
       \return true if success, false otherwise.
       */
-    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest);
+    static bool extractFile(QuaZip* zip, QString fileName, QString fileDest, const char* password=NULL);
     /// Remove some files.
     /**
       \param listFile The list of files to remove.
@@ -57,7 +57,7 @@ public:
       \param file The file to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFile(QString fileCompressed, QString file);
+    static bool compressFile(QString fileCompressed, QString file, const char* password=NULL);
     /// Compress a list of files.
     /**
       \param fileCompressed The name of the archive.
@@ -101,7 +101,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QString fileCompressed, QString dir = QString());
+    static QStringList extractDir(QString fileCompressed, QString dir = QString(), const char* password=NULL);
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the
