@@ -14,6 +14,7 @@ class ZipThread : public QObject, public QRunnable
 	QString m_fileName;
 	bool m_extractHere;
 	bool m_cleanup;
+	const char* m_password;
 
 signals:
 	void done(bool success, QString const& error=QString());
@@ -24,7 +25,7 @@ public:
 	/**
 	 * @param cleanup Delete the archive after extraction is complete.
 	 */
-	ZipThread(QString const& fileName, bool extractHere=true, bool cleanup=true);
+	ZipThread(QString const& fileName, const char* password=NULL, bool extractHere=true, bool cleanup=true);
 	virtual ~ZipThread();
 
 	void run();

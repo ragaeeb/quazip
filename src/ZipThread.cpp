@@ -6,14 +6,12 @@
 #include "quazip.h"
 #include "quazipfile.h"
 
-namespace {
-	const int chunkSize = 1024*1024;
-}
+#define chunkSize 1024*1024
 
 namespace canadainc {
 
-ZipThread::ZipThread(QString const& fileName, bool extractHere, bool cleanup) :
-		m_fileName(fileName), m_extractHere(extractHere), m_cleanup(cleanup)
+ZipThread::ZipThread(QString const& fileName, const char* password, bool extractHere, bool cleanup) :
+		m_fileName(fileName), m_extractHere(extractHere), m_cleanup(cleanup), m_password(password)
 {
 }
 
@@ -78,7 +76,7 @@ void ZipThread::run()
 			break;
 		}
 
-		currentFile.open(QIODevice::ReadOnly);
+		currentFile.open(QIODevice::ReadOnly, m_password);
 
 		while ( !currentFile.atEnd() ) {
 			outputFile.write( currentFile.read(chunkSize) );
