@@ -1,9 +1,7 @@
 #include "ZipThread.h"
 
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
-#include "quazip.h"
 #include "quazipfile.h"
 
 #define chunkSize 1024*1024
@@ -30,7 +28,7 @@ void ZipThread::run()
 	QString resultComment;
 	QuaZip zip(m_fileName);
 
-	QString dest = QDir::homePath();
+	QString dest = m_destinationFolder.isEmpty() ? QDir::homePath() : m_destinationFolder;
 
 	if (!m_extractHere) {
 		QString bookname = m_fileName.split("/").last().split(".").first();
@@ -102,6 +100,11 @@ void ZipThread::run()
 	}
 
 	emit done(result, resultComment);
+}
+
+
+void ZipThread::setDestinationFolder(QString const& folder) {
+    m_destinationFolder = folder;
 }
 
 

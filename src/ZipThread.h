@@ -15,6 +15,7 @@ class ZipThread : public QObject, public QRunnable
 	bool m_extractHere;
 	bool m_cleanup;
 	const char* m_password;
+	QString m_destinationFolder;
 
 signals:
 	void done(bool success, QString const& error=QString());
@@ -29,6 +30,7 @@ public:
 	virtual ~ZipThread();
 
 	void run();
+	void setDestinationFolder(QString const& folder);
 };
 
 } /* namespace canadainc */
