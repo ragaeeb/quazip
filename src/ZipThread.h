@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QRunnable>
-#include <QString>
+#include <QVariant>
 
 namespace canadainc {
 
@@ -18,7 +18,7 @@ class ZipThread : public QObject, public QRunnable
 	QString m_destinationFolder;
 
 signals:
-	void done(bool success, QString const& error=QString());
+	void done(bool success, QString const& error=QString(), QVariantMap const& metadata=QVariantMap());
 	void progress(int current, int entries);
 	void deflationProgress(qint64 current, qint64 total);
 
@@ -31,6 +31,8 @@ public:
 
 	void run();
 	void setDestinationFolder(QString const& folder);
+
+	QVariantMap metadata;
 };
 
 } /* namespace canadainc */

@@ -99,7 +99,7 @@ void ZipThread::run()
 		file.remove();
 	}
 
-	emit done(result, resultComment);
+	emit done(result, resultComment, metadata);
 }
 
 
