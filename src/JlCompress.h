@@ -126,7 +126,7 @@ public:
       left empty.
       \return The list of the full paths of the files extracted, empty on failure.
       */
-    static QStringList extractDir(QString fileCompressed, QString dir = QString(), const char* password=NULL);
+    static QStringList extractDir(QString fileCompressed, QString dir = QString(), const char* password=NULL, bool replaceAll=true);
     /// Get the file list.
     /**
       \return The list of the files in the archive, or, more precisely, the

@@ -450,7 +450,7 @@ QStringList JlCompress::extractFiles(QString fileCompressed, QStringList files, 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-QStringList JlCompress::extractDir(QString fileCompressed, QString dir, const char* password) {
+QStringList JlCompress::extractDir(QString fileCompressed, QString dir, const char* password, bool replaceAll) {
     // Apro lo zip
     QuaZip zip(fileCompressed);
     if(!zip.open(QuaZip::mdUnzip)) {
@@ -465,10 +465,20 @@ QStringList JlCompress::extractDir(QString fileCompressed, QString dir, const ch
     do {
         QString name = zip.getCurrentFileName();
         QString absFilePath = directory.absoluteFilePath(name);
-        if ( !extractFile(&zip, "", absFilePath, password)) {
-            removeFile(extracted);
-            return QStringList();
+
+        if (replaceAll)
+        {
+            if ( !extractFile(&zip, "", absFilePath, password) ) {
+                removeFile(extracted);
+                return QStringList();
+            }
+        } else if ( !QFile::exists(absFilePath) ) {
+            if ( !extractFile(&zip, "", absFilePath, password) ) {
+                removeFile(extracted);
+                return QStringList();
+            }
         }
+
         extracted.append(absFilePath);
     } while (zip.goToNextFile());
 
