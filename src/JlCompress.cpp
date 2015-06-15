@@ -296,7 +296,7 @@ bool JlCompress::compressFile(QString fileCompressed, QString file, const char* 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-bool JlCompress::compressFiles(QString fileCompressed, QStringList files, const char* password)
+bool JlCompress::compressFiles(QString const& fileCompressed, QStringList const& files, const char* password)
 {
     // Creo lo zip
     QuaZip zip(fileCompressed);
@@ -308,11 +308,12 @@ bool JlCompress::compressFiles(QString fileCompressed, QStringList files, const 
 
     // Comprimo i file
     QFileInfo info;
-    Q_FOREACH (QString file, files) {
+    Q_FOREACH (QString file, files)
+    {
         info.setFile(file);
+
         if (!info.exists() || !compressFile(&zip,file,info.fileName(), password)) {
-            QFile::remove(fileCompressed);
-            return false;
+            qDebug() << "FailedCompression" << file;
         }
     }
 
@@ -337,7 +338,7 @@ bool JlCompress::compressFiles(QString fileCompressed, QStringList files, const 
  * * la compressione di un file fallisce;
  * * non si riesce a chiudere l'oggetto zip;
  */
-bool JlCompress::compressDir(QString fileCompressed, QString dir, bool recursive) {
+bool JlCompress::compressDir(QString const& fileCompressed, QString const& dir, bool recursive) {
     // Creo lo zip
     QuaZip zip(fileCompressed);
     QDir().mkpath(QFileInfo(fileCompressed).absolutePath());

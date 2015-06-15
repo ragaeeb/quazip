@@ -89,7 +89,7 @@ public:
       \param files The file list to compress.
       \return true if success, false otherwise.
       */
-    static bool compressFiles(QString fileCompressed, QStringList files, const char* password=NULL);
+    static bool compressFiles(QString const& fileCompressed, QStringList const& files, const char* password=NULL);
     /// Compress a whole directory.
     /**
       \param fileCompressed The name of the archive.
@@ -98,7 +98,7 @@ public:
       just regular files.
       \return true if success, false otherwise.
       */
-    static bool compressDir(QString fileCompressed, QString dir = QString(), bool recursive = true);
+    static bool compressDir(QString const& fileCompressed, QString const& dir = QString(), bool recursive = true);
 
 public:
     /// Extract a single file.
