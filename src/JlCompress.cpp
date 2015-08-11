@@ -308,11 +308,20 @@ bool JlCompress::compressFiles(QString const& fileCompressed, QStringList const&
 
     // Comprimo i file
     QFileInfo info;
+    QSet<QString> encountered; // in case files have the same name but from different directories, we will use this
     Q_FOREACH (QString file, files)
     {
         info.setFile(file);
 
-        if (!info.exists() || !compressFile(&zip,file,info.fileName(), password)) {
+        QString fileName = info.fileName();
+
+        if ( encountered.contains(fileName) ) {
+            fileName = QString("%1_%2").arg( info.dir().dirName() ).arg(fileName);
+        }
+
+        encountered << fileName;
+
+        if (!info.exists() || !compressFile(&zip, file, fileName, password) ) {
             qDebug() << "FailedCompression" << file;
         }
     }
